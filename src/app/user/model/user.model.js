@@ -1,4 +1,4 @@
-import {Schema} from "mongoose";
+import {Schema,model} from "mongoose";
 
 const UserSchema = new Schema({
         name: {type: String, required: true, minlength: 3, maxlength: 20, trim: true},
@@ -15,3 +15,5 @@ const UserSchema = new Schema({
         gender: {type: String, enum: ['male', 'female'], default: "male"}
     },
     {timestamps: {createdAt: true, updatedAt: true}});
+
+export const User = model('User', UserSchema);
