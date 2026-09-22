@@ -1,10 +1,9 @@
-import {config} from 'dotenv';
-config()
-import './common/db/mongoose'
+import'dotenv/config'
+import './common/db/mongoose.js'
 import express from 'express';
-import authRouter from "./app/auth/auth.route";
-import messageRouter from "./app/message/message.route";
-import userRouter from "./app/user/user.route";
+import authRouter from "./app/auth/auth.route.js";
+import messageRouter from "./app/message/message.route.js";
+import userRouter from "./app/user/user.route.js";
 const app = express();
 
 
