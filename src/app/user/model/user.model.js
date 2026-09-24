@@ -10,7 +10,7 @@ const UserSchema = new Schema({
         },
         provider: {type: String, enum: ['local', 'google', 'facebook'], default: "local"},
         isDeleted: {type: Boolean, default: false},
-        isVarified: {type: Boolean, default: false},
+        isVerified: {type: Boolean, default: false},
         dob: Date,
         gender: {type: String, enum: ['male', 'female'], default: "male"}
     },

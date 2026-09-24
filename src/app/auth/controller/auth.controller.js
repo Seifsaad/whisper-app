@@ -9,3 +9,13 @@ export async function register(req, res, next) {
         next(err)
     }
 }
+
+export async function varifyAccount(req, res, next) {
+    try {
+        const {email, code} = req.body
+        const updatedUser = await authService.varifyAccount(email,code)
+        res.json({message:'user verified successfully.',success:true,data:updatedUser})
+    }catch (error){
+        next(error)
+    }
+}
