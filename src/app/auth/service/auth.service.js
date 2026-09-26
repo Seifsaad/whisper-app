@@ -11,12 +11,14 @@ import {
 import {userAlreadyExist, userAlreadyVerified, userNotExist, userNotVerified} from "../../user/errors.js";
 import jwt from "jsonwebtoken";
 import {generateOtpCode} from "../../../common/utils/otp.js";
+import {generateToken} from "../utils/token.js";
+import {comparePassword, hashedPassword} from "../utils/hash.js";
 
 
 export async function register(userData) {
     const userExist = await authRepository.checkUserExistByEmail(userData.email)
     if (userExist) throw userAlreadyExist;
-    userData.password = await bcrypt.hash(userData.password, 10);
+    userData.password = await hashedPassword(userData.password );
     const createUser = await authRepository.createUser(userData)
     const code = generateOtpCode()
     await otpRepository.createOTP({
@@ -42,14 +44,9 @@ export async function login(email, password) {
     const user = await authRepository.checkUserExistByEmail(email);
     if (!user) throw userNotExist;
     if (!user.isVerified) throw userNotVerified;
-    const match = await bcrypt.compare(password, user.password)
+    const match = await comparePassword(password,user['password'])
     if (!match) throw invalidPassword;
-    const token = jwt.sign(
-        {id:user._id,email:user.email,name:user.name},
-        process.env.JWT_SECRET,
-        {expiresIn:toMs(1,'hours')}
-    )
-    return token
+    return generateToken({id:user._id,email:user.email,name:user.name})
 }
 
 export async function sendOtp(email) {
