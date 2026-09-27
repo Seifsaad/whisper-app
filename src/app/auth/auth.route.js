@@ -6,4 +6,7 @@ authRouter.post('/register',authController.register);
 authRouter.patch('/verify-account',authController.varifyAccount)
 authRouter.post('/login',authController.login);
 authRouter.post('/send-otp',authController.sendOtp);
+authRouter.patch('/reset-password',authController.resetPassword);
+
+
 export default authRouter;
