@@ -9,7 +9,6 @@ import {
     invalidCode, invalidPassword, otpExpired
 } from "../errors.js";
 import {userAlreadyExist, userAlreadyVerified, userNotExist, userNotVerified} from "../../user/errors.js";
-import jwt from "jsonwebtoken";
 import {generateOtpCode} from "../../../common/utils/otp.js";
 import {generateToken} from "../utils/token.js";
 import {comparePassword, hashedPassword} from "../utils/hash.js";
@@ -64,11 +63,11 @@ export async function sendOtp(email) {
 }
 
 export async function resetPassword(email,code,newPassword) {
-    const otp = otpRepository.getOtpByEmail(email);
+    const otp = await otpRepository.getOtpByEmail(email);
     if (!otp) throw otpExpired;
-    if(otp.code === code) throw invalidCode;
-    const hashedPassword = await hashedPassword(newPassword);
-    await userRepository.updateUserByEmail(email, hashedPassword)
-
+    if(otp.code !== code) throw invalidCode;
+    const hashPassword = await hashedPassword(newPassword);
+    await userRepository.updateUserByEmail(email, {password:hashPassword})
+    await otpRepository.deleteOTPsByEmail(email)
 }
 

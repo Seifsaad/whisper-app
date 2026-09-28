@@ -19,7 +19,8 @@ app.use((err, req, res, next)=>{
     if(err.isOperational === true) {
         return  res.status(err.statusCode).json({
             message: err.message,
-            success: false
+            success: false,
+            stack: err.stack
         })
     }
     return res.status(500).json({

@@ -1,10 +1,13 @@
 import * as authService from '../service/auth.service.js'
 import {toMs} from "../../../common/utils/time.js";
+import {validateBody} from "../../../common/validation/validation.js";
+import {loginDTO, registerDTO, resetPasswordDTO, sendDTO, verifyAccountDTO} from "../dto/auth.dto.js";
 
 
 export async function register(req, res, next) {
     try {
-        const createUser = await authService.register(req.body)
+        const data = validateBody(registerDTO,req.body)
+        const createUser = await authService.register(data)
         res.status(201).json({message:'user created successfully.',success:true,data:createUser})
     }catch(err) {
         next(err)
@@ -13,7 +16,8 @@ export async function register(req, res, next) {
 
 export async function varifyAccount(req, res, next) {
     try {
-        const {email, code} = req.body
+        const data = validateBody(verifyAccountDTO,req.body)
+        const {email, code} = data
         const updatedUser = await authService.varifyAccount(email,code)
         res.json({message:'user verified successfully.',success:true,data:updatedUser})
     }catch (error){
@@ -23,7 +27,8 @@ export async function varifyAccount(req, res, next) {
 
 export async function login(req, res, next) {
     try {
-        const {email, password} = req.body
+        const data = validateBody(loginDTO,req.body)
+        const {email, password} = data
         const token = await authService.login(email,password)
         res.cookie('access_token',token,{httpOnly:true,maxAge:toMs(1,'hours')
         })
@@ -35,7 +40,8 @@ export async function login(req, res, next) {
 
 export async function sendOtp(req, res, next) {
     try {
-        const {email}= req.body
+        const data = validateBody(sendDTO,req.body)
+        const {email}= data
        await authService.sendOtp(email);
         res.json({message:"new otp sent, please check your mail",success:true})
     }catch (error){
@@ -45,7 +51,8 @@ export async function sendOtp(req, res, next) {
 
 export async function resetPassword(req, res, next) {
     try {
-        const {email,code,newPassword}= req.body
+        const data = validateBody(resetPasswordDTO,req.body)
+        const {email,code,newPassword}= data
         await authService.resetPassword(email,code,newPassword)
         res.json({message:'password reset successfully.',success:true})
     }catch (error){
