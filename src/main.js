@@ -6,8 +6,10 @@ import messageRouter from "./app/message/message.route.js";
 import userRouter from "./app/user/user.route.js";
 import {logger} from "./common/logger/logger.js";
 const app = express();
+import cors from "cors";
 
 
+app.use(cors({origin:'http://localhost:4200'}));
 app.use(express.json());
 
 app.use('/auth', authRouter);
@@ -28,6 +30,8 @@ app.use((err, req, res, next)=>{
         success: false
     })
 })
+
+
 
 app.listen(3000,()=>{
     logger.info('server started on port 3000')

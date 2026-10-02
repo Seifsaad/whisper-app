@@ -59,3 +59,14 @@ export async function resetPassword(req, res, next) {
         next(error)
     }
 }
+
+
+export async function loginWithGoogle(req,res,next){
+    try {
+        const token = await authService.loginWithGoogle(req.body.idToken)
+        res.cookie('access_token',token,{httpOnly:true,maxAge:toMs(1,'hours')})
+        res.json({message:'user login successfully.',success:true})
+    }catch (error){
+        next(error)
+    }
+}
