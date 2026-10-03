@@ -1,10 +1,10 @@
 import'dotenv/config'
-import './common/db/mongoose.js'
+import './lib/db/mongoose.js'
 import express from 'express';
 import authRouter from "./app/auth/auth.route.js";
 import messageRouter from "./app/message/message.route.js";
 import userRouter from "./app/user/user.route.js";
-import {logger} from "./common/logger/logger.js";
+import {logger} from "./pkg/logger/logger.js";
 const app = express();
 import cors from "cors";
 

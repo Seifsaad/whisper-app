@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {toMs} from "../../../common/utils/time.js";
+import {toMs} from "../../../pkg/utils/time.js";
 
 export function generateToken(payload) {
     return jwt.sign(
