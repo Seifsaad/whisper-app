@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import {env} from "../config/env.js";
 
-mongoose.connect(process.env.MONGODB_URL);
+mongoose.connect(env.db.url);
 

@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import {env} from "../config/env.js";
 
 export async function sendEmail(to,subject,html) {
     const transporter = nodemailer.createTransport({
@@ -6,13 +7,13 @@ export async function sendEmail(to,subject,html) {
         host: 'smtp.gmail.com',
         port: 587,
         auth:{
-            user:process.env.USER_EMAIL,
-            pass:process.env.USER_PASS
+            user:env.nodemailer.user,
+            pass:env.nodemailer.password
         }
 
     });
     await transporter.sendMail({
-        from: ` "whisper-app" <${process.env.USER_EMAIL}>`,
+        from: ` "whisper-app" <${env.nodemailer.user}>`,
         to:to,
         subject:subject,
         html:html,
