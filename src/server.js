@@ -14,8 +14,8 @@ function shutdown() {
     });
 }
 
-server.on( 'SIGINT', shutdown)
-server.on('SIGTERM', shutdown)
+process.on( 'SIGINT', shutdown)
+process.on('SIGTERM', shutdown)
 
  
 server.listen(env.port,()=>{

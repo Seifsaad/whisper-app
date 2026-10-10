@@ -15,6 +15,7 @@ import {comparePassword, hashedPassword} from "../utils/hash.js";
 import {OAuth2Client} from "google-auth-library";
 import {verifyGoogleToken} from "../../../lib/utils/google-auth.js";
 import {email} from "zod";
+import {mailjetProvider} from "../../../lib/email/init.js";
 
 
 export async function register(userData) {
@@ -26,7 +27,7 @@ export async function register(userData) {
     await otpRepository.createOTP({
         code: code, email: userData.email, expiresAt: new Date(Date.now() + toMs(5, 'minutes')),
     })
-    await sendEmail(userData.email, `verification code`, `<h1>Your verification code is ${code}</h1>`)
+    await mailjetProvider.sendEmail(userData.email, `verification code`, `<h1>Your verification code is ${code}</h1>`)
     return createUser
 }
 
@@ -61,7 +62,7 @@ export async function sendOtp(email) {
         email: email,
         expiresAt: Date.now() + toMs(3, 'minutes'),
     })
-    await sendEmail(email, 'new otp', `<p>your new otp is ${code}</p>`)
+    await mailjetProvider.sendEmail(email, 'new otp', `<p>your new otp is ${code}</p>`)
 
 }
 

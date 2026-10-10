@@ -5,6 +5,7 @@ import userRouter from "./app/user/user.route.js";
 
 export const router = Router();
 
+
 router.use('/auth', authRouter);
 router.use('/message', messageRouter);
 router.use('/user', userRouter);

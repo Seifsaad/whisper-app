@@ -1,7 +1,7 @@
 import {logger} from "../../pkg/logger/logger.js";
 
 export function globalErrorHandler(err, req, res, next){
-        logger.error(err.message,err)
+        logger.error(err.message,{stack:err.stack,correlationId:req.correlationId});
         if(err.isOperational === true) {
             return  res.status(err.statusCode).json({
                 message: err.message,
@@ -11,6 +11,7 @@ export function globalErrorHandler(err, req, res, next){
         }
         return res.status(500).json({
             error: 'something went wrong',
-            success: false
+            success: false,
+            message: err.message,
         })
     }
