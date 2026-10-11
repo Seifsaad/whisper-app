@@ -6,4 +6,8 @@ export async function updateUserByEmail(email, updatedData) {
         updatedData,
         {returnDocument: 'after'}
     )
+};
+
+export async function findUserById(id) {
+    return User.findById(id);
 }

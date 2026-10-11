@@ -1,5 +1,5 @@
 import {model, Schema} from "mongoose";
-import * as schema from "mongoose/types/types.d.ts";
+
 
 const messageSchema = new Schema({
     content: {
