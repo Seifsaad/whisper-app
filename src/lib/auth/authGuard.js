@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import {env} from "../config/env.js";
 
 
-export function guard(req, res, next) {
+export function authGuard(req, res, next) {
     try {
         const token = req.cookies.access_token
         if (!token) throw new AppError('No token provided',403);

@@ -17,3 +17,16 @@ export async function sendMessage(req,res,next) {
         next(error);
     }
 }
+
+export async function getAllMessages(req,res,next) {
+    try {
+        const messages = await messageService.getAllMessages(req.user.id)
+        res.json(({
+            messages:'ok',
+            success: true,
+            data: messages
+        }))
+    }catch (error){
+        next(error);
+    }
+}

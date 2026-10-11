@@ -37,7 +37,7 @@ export async function varifyAccount(email, code) {
     if (user.isVerified === true) throw userAlreadyVerified;
     const otp = await otpRepository.getOtpByEmail(email);
     if (!otp) throw otpExpired;
-    if (otp.code === code) throw invalidCode;
+    if (otp.code !== code) throw invalidCode;
     const updatedUser = await userRepository.updateUserByEmail(email, {isVerified: true})
     await otpRepository.deleteOTPsByEmail(email)
     return updatedUser

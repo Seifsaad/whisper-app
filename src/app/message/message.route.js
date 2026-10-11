@@ -1,9 +1,9 @@
 import {Router} from 'express';
 const messageRouter = Router();
 import * as messageController from "./controller/message.controller.js";
-import {guard} from "../../lib/auth/guard.js";
+import {authGuard} from "../../lib/auth/authGuard.js";
 messageRouter.post('/',messageController.sendMessage);
-messageRouter.post('/public',guard,messageController.sendMessage);
-
+messageRouter.post('/public',authGuard,messageController.sendMessage);
+messageRouter.get('/',authGuard,messageController.getAllMessages);
 
 export default messageRouter;
