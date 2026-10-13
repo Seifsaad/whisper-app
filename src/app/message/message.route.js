@@ -6,4 +6,5 @@ messageRouter.post('/',messageController.sendMessage);
 messageRouter.post('/public',authGuard,messageController.sendMessage);
 messageRouter.get('/',authGuard,messageController.getAllMessages);
 
+
 export default messageRouter;
