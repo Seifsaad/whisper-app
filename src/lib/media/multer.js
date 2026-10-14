@@ -1,7 +1,8 @@
 import multer, {diskStorage} from "multer"
 import crypto from "node:crypto";
 import {AppError} from "../error/error.js";
-function multerUpload(){
+import {allowedFields} from "./file.validation.js";
+function multerUpload(allowedTypes = allowedFields.images){
     return multer({
         fileFilter: (req, file, cb) => {
             if(!allowedTypes.includes(file.mimetype)){
@@ -18,7 +19,7 @@ function multerUpload(){
     })
 }
 
-export function uploadSingleFile(fileName,allowedTypes=['image/png','image/jpeg']){
+export function uploadSingleFile(fileName,allowedTypes=allowedFields.images){
     return multerUpload(allowedTypes).single(fileName)
 }
 
