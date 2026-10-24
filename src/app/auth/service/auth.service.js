@@ -1,10 +1,7 @@
 import * as authRepository from '../repository/auth.repository.js'
 import * as otpRepository from '../repository/otp.repository.js'
 import * as userRepository from '../../user/repository/user.repository.js'
-import bcrypt from 'bcrypt'
-import crypto from 'node:crypto'
-import {sendEmail} from "../../../lib/email/nodemailer.js";
-import {toMs} from "../../../pkg/utils/time.js";
+import {toMs, toSeconds} from "../../../pkg/utils/time.js";
 import {
     invalidCode, invalidPassword, otpExpired
 } from "../errors.js";
@@ -12,10 +9,9 @@ import {userAlreadyExist, userAlreadyVerified, userNotExist, userNotVerified} fr
 import {generateOtpCode} from "../../../lib/utils/otp.js";
 import {generateToken} from "../utils/token.js";
 import {comparePassword, hashedPassword} from "../utils/hash.js";
-import {OAuth2Client} from "google-auth-library";
 import {verifyGoogleToken} from "../../../lib/utils/google-auth.js";
-import {email} from "zod";
 import {mailjetProvider} from "../../../lib/email/init.js";
+import {cacheProvider} from "../../../lib/cache/init.js";
 
 
 export async function register(userData) {
@@ -23,10 +19,12 @@ export async function register(userData) {
     if (userExist) throw userAlreadyExist;
     userData.password = await hashedPassword(userData.password);
     const createUser = await authRepository.createUser(userData)
+    console.log(createUser)
     const code = generateOtpCode()
-    await otpRepository.createOTP({
-        code: code, email: userData.email, expiresAt: new Date(Date.now() + toMs(5, 'minutes')),
-    })
+    // await otpRepository.createOTP({
+    //     code: code, email: userData.email, expiresAt: new Date(Date.now() + toMs(5, 'minutes')),
+    // })
+    await cacheProvider.set(`otp:${createUser._id.toString()}`,code,toSeconds(3,'minutes'))
     await mailjetProvider.sendEmail(userData.email, `verification code`, `<h1>Your verification code is ${code}</h1>`)
     return createUser
 }
@@ -35,11 +33,12 @@ export async function varifyAccount(email, code) {
     const user = await authRepository.checkUserExistByEmail(email);
     if (!user) throw userNotExist;
     if (user.isVerified === true) throw userAlreadyVerified;
-    const otp = await otpRepository.getOtpByEmail(email);
+    const otp = await cacheProvider.get(`otp:${user._id.toString()}`);
+    console.log(otp)
     if (!otp) throw otpExpired;
-    if (otp.code !== code) throw invalidCode;
+    if (otp !== code) throw invalidCode;
     const updatedUser = await userRepository.updateUserByEmail(email, {isVerified: true})
-    await otpRepository.deleteOTPsByEmail(email)
+    await cacheProvider.del(`otp:${user._id.toString()}`)
     return updatedUser
 }
 
@@ -57,11 +56,12 @@ export async function sendOtp(email) {
     if (!user) throw userNotExist;
     await otpRepository.deleteOTPsByEmail(email)
     const code = generateOtpCode()
-    await otpRepository.createOTP({
-        code: code,
-        email: email,
-        expiresAt: Date.now() + toMs(3, 'minutes'),
-    })
+    // await otpRepository.createOTP({
+    //     code: code,
+    //     email: email,
+    //     expiresAt: Date.now() + toMs(3, 'minutes'),
+    // })
+    await cacheProvider.set(`otp:${user._id.toString()}`,code,toSeconds(3,'minutes'))
     await mailjetProvider.sendEmail(email, 'new otp', `<p>your new otp is ${code}</p>`)
 
 }
@@ -69,7 +69,7 @@ export async function sendOtp(email) {
 export async function resetPassword(email, code, newPassword) {
     const otp = await otpRepository.getOtpByEmail(email);
     if (!otp) throw otpExpired;
-    if (otp.code !== code) throw invalidCode;
+    if (otp !== code) throw invalidCode;
     const hashPassword = await hashedPassword(newPassword);
     await userRepository.updateUserByEmail(email, {password: hashPassword})
     await otpRepository.deleteOTPsByEmail(email)
