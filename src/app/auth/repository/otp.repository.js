@@ -7,7 +7,7 @@ export async function createOTP(otpData) {
 
 
 export async function getOtpByEmail(email) {
-    return await OTP.findOne({email: email});
+    return await OTP.findOne({email:email});
 }
 
 export async function deleteOTPsByEmail(email) {
