@@ -18,9 +18,8 @@ userRouter.get('/get-all-users',
 
 userRouter.post('/upload-profile-pic',authGuard,uploadSingleFile('pp'),
     fileValidation(),
-    (req,res,next)=>{
     userController.updateProfilePic
-})
+)
 
 userRouter.post('/upload-cv',uploadSingleFile('cv',allowedFields.files),
     fileValidation(allowedFields.files),
