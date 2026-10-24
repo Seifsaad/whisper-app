@@ -13,6 +13,9 @@ export const allowedFields = {
 export const fileValidation =(allowedTypes = allowedFields.images)=>
     async (req, res, next) => {
     try {
+        if(req.file.size > 5 * 1024 * 1024){
+            throw new AppError("exceeded size allowed",400)
+        }
         // get the file path
         const filePath = req.file.path;
         // read the file and return buffer
@@ -20,12 +23,13 @@ export const fileValidation =(allowedTypes = allowedFields.images)=>
         // get the file type
         const type = await fileTypeFromBuffer(buffer);
         // validate
-        const allowedTypes = ["image/jpeg", "image/png"];
-        if (!type || !allowedTypes.includes(type.mime))
+        if (!type || !allowedTypes.includes(type.mime)){
+            fs.unlinkSync(filePath);
             return next(new AppError("Invalid file type",400));
+        }
 
         return next();
     } catch (error) {
-        return next(new Error("Internal server error"));
+        return next(error);
     }
 };

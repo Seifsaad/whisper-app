@@ -3,6 +3,8 @@ import {withCache} from "../../lib/cache/withCache.js";
 import {User} from "./model/user.model.js";
 import {uploadMultipleFiles, uploadSingleFile} from "../../lib/media/multer.js";
 import {allowedFields, fileValidation} from "../../lib/media/file.validation.js";
+import * as userController from "./controller/user.controller.js";
+import {authGuard} from "../../lib/auth/authGuard.js";
 
 const userRouter = Router();
 
@@ -14,14 +16,14 @@ userRouter.get('/get-all-users',
     })
 
 
-userRouter.post('/upload-profile-pic',uploadSingleFile('pp'),
+userRouter.post('/upload-profile-pic',authGuard,uploadSingleFile('pp'),
+    fileValidation(),
     (req,res,next)=>{
-    console.log(req.file);
-    res.json('ok')
+    userController.updateProfilePic
 })
 
 userRouter.post('/upload-cv',uploadSingleFile('cv',allowedFields.files),
-    fileValidation(),
+    fileValidation(allowedFields.files),
     (req,res,next)=>{
     console.log(req.file);
     res.json('ok')

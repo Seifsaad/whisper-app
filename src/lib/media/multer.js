@@ -8,7 +8,7 @@ function multerUpload(allowedTypes = allowedFields.images){
             if(!allowedTypes.includes(file.mimetype)){
                 return cb(new AppError('invalid file format',400),false)
             }
-                cb('null',true)
+                cb(null,true)
         },
         storage: diskStorage({
             destination:'uploads', filename:function (req, file, cb) {

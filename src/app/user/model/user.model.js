@@ -12,7 +12,10 @@ const UserSchema = new Schema({
         isDeleted: {type: Boolean, default: false},
         isVerified: {type: Boolean, default: false},
         dob: Date,
-        gender: {type: String, enum: ['male', 'female'], default: "male"}
+        gender: {type: String, enum: ['male', 'female'], default: "male"},
+        profilePicPath:String,
+        coverImagePath:[String],
+        cvPath:String,
     },
     {timestamps: {createdAt: true, updatedAt: true}});
 
