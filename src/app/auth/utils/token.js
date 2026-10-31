@@ -23,7 +23,8 @@ export function verifyRefreshToken(token) {
 export function setCookies(res, accessToken, refreshToken) {
     res.cookie('access_token', accessToken, {
         httpOnly: true,
-        maxAge: toMs(1, 'hours')
+        maxAge: toMs(1, 'hours'),
+        path:'/'
     });
     res.cookie('refresh_token', refreshToken, {
         httpOnly: true,
