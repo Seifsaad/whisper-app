@@ -18,6 +18,6 @@ process.on( 'SIGINT', shutdown)
 process.on('SIGTERM', shutdown)
 
  
-server.listen(env.port,()=>{
-    logger.info(`server started on ${env.port} `);
+server.listen(3000,()=>{
+    logger.info(`server started on ${3000} `);
 })

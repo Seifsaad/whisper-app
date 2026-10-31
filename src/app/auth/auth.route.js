@@ -9,6 +9,12 @@ authRouter.post('/login',authController.login);
 authRouter.post('/send-otp',authController.sendOtp);
 authRouter.patch('/reset-password',idempotency(),authController.resetPassword);
 authRouter.post('/login-with-google',authController.loginWithGoogle);
-
+authRouter.post('/refresh-token', authController.refreshTokenFn);
+authRouter.post('/verify-to-login', authController.verifyToLogin);
+authRouter.patch('/enable-2-steps-verification',authController.enable2stepVerification)
+authRouter.post('/logout',(req,res,next)=>{
+    res.clearCookie('access_token');
+    res.json({message:'logged out'})
+})
 
 export default authRouter;

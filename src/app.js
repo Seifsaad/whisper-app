@@ -18,6 +18,10 @@ export function createApp() {
     app.use(correlationId)
     app.use('/api', router);
 
+    app.get('/health',(req,res,next)=>{
+        console.log('Server is HIT');
+        res.json('OK')
+    })
     app.use(globalErrorHandler)
 
 

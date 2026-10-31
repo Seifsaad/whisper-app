@@ -16,6 +16,7 @@ const UserSchema = new Schema({
         profilePicPath:String,
         coverImagePath:[String],
         cvPath:String,
+        twoStepsVerification: {type: Boolean, default: false},
     },
     {timestamps: {createdAt: true, updatedAt: true}});
 
